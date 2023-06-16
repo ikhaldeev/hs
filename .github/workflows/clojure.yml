@@ -63,7 +63,7 @@ jobs:
           restore-keys: cljdeps-
 
       - name: Init database
-        run: psql -h postgres -d hs_test -U hs < ./resources/sql/init.sql
+        run: psql -h localhost -d hs_test -U hs < ./resources/sql/init.sql
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
@@ -71,5 +71,3 @@ jobs:
           
       - name: Execute clojure code
         run: clj -X:test hs.test-runner/run
-        env:
-          DBHOST: postgres
