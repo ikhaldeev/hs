@@ -1,0 +1,10 @@
+* Tasks
+** Init project
+*** TODO decide on stack
+ - lein
+ - ring/compojure?/conmon?/hugsql
+ - validation with spec
+ - shadowcljs
+ - reagent/reframe
+*** TODO create repo
+*** TODO config actions to test
