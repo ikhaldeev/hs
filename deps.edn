@@ -2,6 +2,6 @@
  {org.clojure/clojure {:mvn/version "1.11.1"}
   com.layerware/hugsql {:mvn/version "0.5.3"}
   org.postgresql/postgresql {:mvn/version "42.3.1"}}
- :paths ["src/clj" "test/clj" "resources"]
+ :paths ["src/clj" "resources"]
  :aliases
- {}}
+ {:test {:extra-paths ["test/clj"]}}}

@@ -4,10 +4,10 @@
   (:import [java.time LocalDate]))
 
 (def pg-db {:dbtype "postgresql"
-            :dbname "hs"
-            :host "localhost"
-            :user "hs"
-            :password "hs"})
+            :dbname (or (System/getenv "DBNAME") "hs")
+            :host (or (System/getenv "DBHOST") "localhost")
+            :user (or (System/getenv "DBUSER") "hs")
+            :password (or (System/getenv "DBPASSWORD") "hs")})
 
 (hugsql/def-db-fns "sql/queries.sql")
 
