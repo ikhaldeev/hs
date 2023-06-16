@@ -70,4 +70,4 @@ jobs:
           PGPASSWORD: hs
           
       - name: Execute clojure code
-        run: clj -X:test hs.test-runner/run
+        run: clojure -X:test hs.test-runner/run
