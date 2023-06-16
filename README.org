@@ -1,10 +1,17 @@
 * Tasks
 ** Init project
-*** TODO decide on stack
- - lein
- - ring/compojure?/conmon?/hugsql
+*** DONE decide on stack
+ - deps
+ - ring/compojure/hugsql
  - validation with spec
  - shadowcljs
  - reagent/reframe
-*** TODO create repo
-*** TODO config actions to test
+*** DONE create repo
+*** DONE config actions to test
+** Create patient
+*** TODO server
+*** TODO route
+*** TODO test
+*** TODO init frontend
+*** TODO page
+*** TODO form

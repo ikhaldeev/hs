@@ -1,7 +1,7 @@
 -- :name insert-patient :<!
 -- :doc Insert a single patient
 insert into patients (first_name, middle_name, last_name, sex, dob, address, policy_number)
-values (:first_name, :middle_name, :last_name, :sex, :dob, :address, :policy_number)
+values (:first-name, :middle-name, :last-name, :sex, :dob, :address, :policy-number)
 returning id
 
 -- :name patient-by-id :? :1
