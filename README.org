@@ -12,7 +12,7 @@
 *** DONE server
 *** DONE route
 *** DONE test
-*** TODO validation
+*** DONE validation
 *** TODO init frontend
 *** TODO page
 *** TODO form

@@ -7,7 +7,7 @@
   compojure/compojure {:mvn/version "1.7.0"}
   ring/ring {:mvn/version "1.10.0"}
   ring/ring-json {:mvn/version "0.5.1"}}
- :paths ["src/clj" "resources"]
+ :paths ["src/clj" "src/cljc" "resources"]
  :aliases
  {:test {:extra-deps {ring/ring-mock {:mvn/version "0.4.0"}
                       cheshire/cheshire {:mvn/version "5.11.0"}}

@@ -1,14 +1,12 @@
 (ns hs.patients
-  (:require [hs.db :refer [ds] :as db])
+  (:require [hs.db :refer [ds] :as db]
+            [hs.validation :as v])
   (:import [java.time LocalDate]))
-
-(defn validate!
-  [spec data])
 
 (defn create-patient
   [data]
-  (validate! ::create-patient data)
-  (let [[result] (db/insert-patient ds (-> data
+  (let [validated-data (v/validated ::v/create-patient data)
+        [result] (db/insert-patient ds (-> validated-data
                                            (update :dob #(LocalDate/parse %))))]
     result))
 

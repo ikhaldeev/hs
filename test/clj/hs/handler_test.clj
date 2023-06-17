@@ -22,7 +22,16 @@
     (let [request (-> (mock/request :post "/api/patients")
                       (mock/json-body test-patient))
           response (-> (dev-handler request) :body (json/parse-string true))]
-      (is (-> response :id nil? not)))))
+      (is (-> response :id nil? not))))
+  (testing "errors returned when data is not valid"
+    (let [request (-> (mock/request :post "/api/patients")
+                      (mock/json-body (dissoc test-patient :first-name)))
+          response (-> (dev-handler request))
+          response-status (:status response)
+          response-body (-> response :body (json/parse-string true))]
+      (is (= 400 response-status))
+      (is (= nil (-> response-body :errors first :via)))
+      (is (= "first-name" (-> response-body :errors first :field))))))
 
 (deftest get-patient
   (testing "created patient can be retrieved"
