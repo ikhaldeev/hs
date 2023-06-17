@@ -9,9 +9,16 @@
 *** DONE create repo
 *** DONE config actions to test
 ** Create patient
-*** TODO server
-*** TODO route
-*** TODO test
+*** DONE server
+*** DONE route
+*** DONE test
+*** TODO validation
 *** TODO init frontend
 *** TODO page
 *** TODO form
+* Not implemented
+** connection pool
+** uberjar
+** docker image for deployment into k8s
+* Not going to implement
+** system components: mount, integrant.
