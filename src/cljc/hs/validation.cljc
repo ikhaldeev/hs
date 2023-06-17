@@ -27,6 +27,7 @@
   (let [explain-data (s/explain-data spec data)
         problems (or (:clojure.spec.alpha/problems explain-data)
                      (:cljs.spec.alpha/problems explain-data))]
+    (println explain-data)
     (->> problems
          (map (fn [p] {:field (get-problem-field p)
                        :via (some->> p :via (drop 1) (last) (name) (keyword))})))))
@@ -81,6 +82,13 @@
 
   (get-errors ::create-patient {:first-name ""
                                 :middle-name ""
+                                :last-name "Khaldeev"
+                                :sex "male"
+                                :dob "1987-02-20"
+                                :policy-number "1234-ABC-1234"
+                                :address "city, zip, street"})
+
+  (get-errors ::create-patient {:first-name "Ivan"
                                 :last-name "Khaldeev"
                                 :sex "male"
                                 :dob "1987-02-20"

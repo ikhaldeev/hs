@@ -5,8 +5,10 @@
 
 (defn create-patient
   [data]
-  (let [validated-data (v/validated ::v/create-patient data)
-        [result] (db/insert-patient ds (-> validated-data
+  (let [defaults {:middle-name nil
+                  :address nil}
+        validated-data (v/validated ::v/create-patient data)
+        [result] (db/insert-patient ds (-> (merge defaults validated-data)
                                            (update :dob #(LocalDate/parse %))))]
     result))
 

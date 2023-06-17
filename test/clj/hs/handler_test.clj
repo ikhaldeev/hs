@@ -23,6 +23,11 @@
                       (mock/json-body test-patient))
           response (-> (dev-handler request) :body (json/parse-string true))]
       (is (-> response :id nil? not))))
+  (testing "patient can be created without optional fields"
+    (let [request (-> (mock/request :post "/api/patients")
+                      (mock/json-body (dissoc test-patient :middle-name :address)))
+          response (-> (dev-handler request) :body (json/parse-string true))]
+      (is (-> response :id nil? not))))
   (testing "errors returned when data is not valid"
     (let [request (-> (mock/request :post "/api/patients")
                       (mock/json-body (dissoc test-patient :first-name)))

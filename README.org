@@ -13,12 +13,16 @@
 *** DONE route
 *** DONE test
 *** DONE validation
-*** TODO init frontend
+*** DONE init frontend
 *** TODO page
-*** TODO form
+*** DONE form
 * Not implemented
+** frontend validation
 ** connection pool
 ** uberjar
 ** docker image for deployment into k8s
 * Not going to implement
 ** system components: mount, integrant.
+* Questions
+** search vs filtering. what the difference?
+** use library vs implement myself balance?
