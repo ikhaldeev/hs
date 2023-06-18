@@ -2,5 +2,13 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "karma": "^6.4.2",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-cljs-test": "^0.1.0"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start --single-run"
   }
 }

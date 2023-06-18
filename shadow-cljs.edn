@@ -3,4 +3,8 @@
  {:app {:target :browser
         :output-dir "resources/public/js/compiled"
         :asset-path "/js/compiled"
-        :modules {:app {:init-fn hs.core/init}}}}}
+        :modules {:app {:init-fn hs.core/init}}}
+  :ci
+  {:target    :karma
+   :output-to "target/ci.js"
+   :ns-regexp "-test$"}}}

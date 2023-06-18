@@ -42,6 +42,11 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+	  cache: 'npm'
+	
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@11.0
         with:
@@ -69,5 +74,12 @@ jobs:
           # `PGPASSWORD=postgres_password psql ...`
           PGPASSWORD: hs
           
-      - name: Execute clojure code
+      - name: Run clojure tests
         run: clojure -X:test hs.test-runner/run
+
+      - name: Run clojurescript tests
+        run: |
+	  npm ci
+	  clj -M:cljs:cljs-test:shadow-cljs compile ci
+	  npm test
+

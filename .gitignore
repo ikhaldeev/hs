@@ -5,4 +5,4 @@
 /node_modules
 /.shadow-cljs
 /resources/public/js/compiled
-package-lock.json
+/target

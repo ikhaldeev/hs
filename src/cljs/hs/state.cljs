@@ -15,6 +15,16 @@
     {:db (assoc db :active-route route)}))
 
 (re-frame/reg-event-fx
+  ::open-create-patient-form
+  (fn [{:keys [_db]} [_]]
+    {:dispatch [::set-active-route {:route-name :create-patient}]}))
+
+(re-frame/reg-event-fx
+  ::cancel-create-patient
+  (fn [{:keys [_db]} [_]]
+    {:dispatch [::set-active-route {:route-name :patients}]}))
+
+(re-frame/reg-event-fx
   ::init-create-patient-form
   (fn [{:keys [db]} [_]]
     {:db (assoc db :form {})}))

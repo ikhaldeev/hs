@@ -7,7 +7,10 @@
 
 (defn- patients
   [params]
-  [:div "not implemented"])
+  [:div
+   [:h1 "Patients"]
+   [:div [:button {:on-click #(re-frame/dispatch [::state/open-create-patient-form])}
+          "Create patient"]]])
 
 (defn- create-patient
   []
@@ -15,6 +18,8 @@
   (fn []
     (let [errors @(re-frame/subscribe [::state/form-errors])]
       [:div
+       [:div [:button {:on-click #(re-frame/dispatch [::state/cancel-create-patient])}
+              "Back"]]
        [:div
         [:label "First Name"]
         [:input {:on-change #(re-frame/dispatch [::state/set-form-value :first-name %])}]
@@ -67,7 +72,6 @@
   []
   (let [{:keys [route-name params]} @(re-frame/subscribe [::state/active-route])]
     (case route-name
-      :patients [patients params]
       :create-patient [create-patient params]
       :edit-patient [edit-patient params]
-      nil [:div])))
+      [patients params])))
