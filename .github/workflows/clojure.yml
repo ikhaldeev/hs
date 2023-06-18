@@ -46,7 +46,7 @@ jobs:
         with:
           node-version: 'latest'
           cache: 'npm'
-	
+
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@11.0
         with:
@@ -79,7 +79,7 @@ jobs:
 
       - name: Run clojurescript tests
         run: |
-	  npm ci
-	  clj -M:cljs:cljs-test:shadow-cljs compile ci
-	  npm test
+          npm ci
+          clj -M:cljs:cljs-test:shadow-cljs compile ci
+          npm test
 
