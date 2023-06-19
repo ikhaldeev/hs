@@ -14,9 +14,15 @@
 (hugsql/def-db-fns "sql/queries.sql"
   {:adapter (next-adapter/hugsql-adapter-next-jdbc jdbc/unqualified-snake-kebab-opts)})
 
+(defn patients-q-snip-sqlvec
+  [q]
+  ["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number iLIKE ?", (str "%" q "%")])
+
 (comment
+  (hugsql/def-sqlvec-fns "sql/queries.sql"
+    {:adapter (next-adapter/hugsql-adapter-next-jdbc jdbc/unqualified-snake-kebab-opts)})
   
-  (insert-patient ds {:first-name "first name"
+  (insert-patient ds {:first-name "Ivan"
                       :middle-name "middle name"
                       :last-name "last name"
                       :sex "male"
@@ -25,5 +31,20 @@
                       :policy-number "000-ABC-111"})
   (-> (patient-by-id ds {:id 3})
       (update :dob #(.toString %)))
+
+  {:q
+   [["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?"
+     "%first%"]
+    ["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE '?'"
+     "%address%"]]}
+  
+  (list-patients ds (-> {:q ["first" "address"]}
+                        (update :q #(map patients-q-snip-sqlvec %))))
+
+  (list-patients ds {:q []})
+
+  (list-patients ds {:q '(["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?" "%first%"]
+                          ["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?" "%address%"])})
+
   )
 

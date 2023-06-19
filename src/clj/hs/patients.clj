@@ -12,7 +12,21 @@
                                            (update :dob #(LocalDate/parse %))))]
     result))
 
+(defn- ->patient-view
+  [patient]
+  (update patient :dob #(.toString %)))
+
 (defn get-patient
   [id]
   (-> (db/patient-by-id ds {:id id})
-      (update :dob #(.toString %))))
+      (->patient-view)))
+
+(defn list-patients
+  [data]
+  (let [validated-data (v/validated ::v/list-patients data)
+        query-data (if (:q validated-data)
+                     (update validated-data :q #(map db/patients-q-snip-sqlvec %))
+                     validated-data)
+        patients (->> (db/list-patients ds query-data)
+                      (map ->patient-view))]
+    {:patients patients}))

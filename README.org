@@ -14,10 +14,31 @@
 *** DONE test
 *** DONE validation
 *** DONE init frontend
-*** TODO page
+*** DONE page
 *** DONE form
+** List patients
+*** backend API
+*** pagination
+*** frontend page
+** Edit patient
+*** open edit form on select patient from list
+*** backend API
+*** frontend page
+*** frontend validation
+** Delete patient
+*** modal on frontend
+*** backend API
+** Search and filter patients
+*** backend API
+*** frontend form
+** CSS/HTML
+** uberjar
+** docker image
+** Integration test
+
 * Not implemented
 ** frontend validation
+** integration test
 ** connection pool
 ** uberjar
 ** docker image for deployment into k8s
@@ -26,3 +47,5 @@
 * Questions
 ** search vs filtering. what the difference?
 ** use library vs implement myself balance?
+* Fails
+** Frontend navigation with waiting for event to occur. Can't wait and continue with test.

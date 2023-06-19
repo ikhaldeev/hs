@@ -2,8 +2,9 @@
   (:require
     [clojure.test :refer [use-fixtures deftest testing is]]
     [ring.mock.request :as mock]
-    [hs.db-test :refer [with-test-db]]
+    [hs.db-test :refer [with-test-db clear-table!]]
     [hs.handler :refer [dev-handler]]
+    [hs.patients :as p]
     [cheshire.core :as json]))
 
 (use-fixtures :once with-test-db)
@@ -16,6 +17,12 @@
                    :dob "1987-02-20"
                    :address "some address"
                    :policy-number policy-number})
+
+(defn- patient-created
+  [options]
+  (let [default test-patient
+        data (merge default options)]
+    (p/create-patient data)))
 
 (deftest create-patient
   (testing "patient can be created"
@@ -46,3 +53,20 @@
           request (-> (mock/request :get (str "/api/patients/" patient-id)))
           response (-> (dev-handler request) :body (json/parse-string true))]
       (is (= patient-id (:id response))))))
+
+(deftest list-patients
+  (clear-table! :patients)
+  (patient-created {:last-name "White"
+                    :policy-number "000-ABC-001"})
+  (patient-created {:last-name "Blue"
+                    :policy-number "000-ABC-002"})
+  (patient-created {:last-name "Red"
+                    :policy-number "000-ABC-003"})
+  (testing "patients list can be returned"
+    (let [request (-> (mock/request :get (str "/api/patients")))
+          response (-> (dev-handler request) :body (json/parse-string true))]
+      (is (= 3 (-> response :patients count)))))
+  (testing "patients list can be searched"
+    (let [request (-> (mock/request :get (str "/api/patients") {:q ["white"]}))
+          response (-> (dev-handler request) :body (json/parse-string true))]
+      (is (= 1 (-> response :patients count))))))

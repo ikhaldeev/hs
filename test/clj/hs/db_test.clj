@@ -2,6 +2,7 @@
   (:require
     [clojure.test :refer [use-fixtures deftest testing is]]
     [next.jdbc :as jdbc]
+    [next.jdbc.sql :as sql]
     [hs.db :as db])
   (:import [java.time LocalDate]))
 
@@ -10,6 +11,10 @@
   (let [pg-db (assoc db/pg-db :dbname (or (System/getenv "DBNAME_TEST") "hs_test"))]
     (with-redefs [db/ds (jdbc/get-datasource pg-db)]
       (f))))
+
+(defn clear-table!
+  [table]
+  (jdbc/execute! db/ds [(str "delete from " (name table))]))
 
 (use-fixtures :once with-test-db)
 

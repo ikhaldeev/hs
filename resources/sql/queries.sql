@@ -8,3 +8,9 @@ returning id
 -- :doc Get patient by id
 select * from patients
 where id = :id
+
+-- :name list-patients :? :*
+-- :doc Get patients list by query params
+select * from patients
+where true
+--~ (when (:q params) ":snip*:q")
