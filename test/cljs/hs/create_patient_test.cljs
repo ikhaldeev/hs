@@ -2,26 +2,10 @@
   (:require [cljs.test :refer-macros [use-fixtures deftest testing is]]
             [re-frame.core :as re-frame]
             [day8.re-frame.test :as rf-test]
-            [hs.core :as core]
+            [hs.fixtures :as f]
             [hs.state :as state]))
 
-(defn mock-warehouse
-  [requests]
-  (re-frame/clear-fx :http-xhrio)
-  (re-frame/reg-fx
-   :http-xhrio
-   (fn [{:keys [uri on-success _on-failure] :as request}]
-     (when-let [response (get requests uri)]
-       (if (fn? response)
-         (re-frame/dispatch (conj on-success (response request)))
-         (re-frame/dispatch (conj on-success response)))))))
-
-(defn init-page
-  []
-  (js/document.body.insertAdjacentHTML "afterBegin" "<div id='app'></div>")
-  (core/init))
-
-(use-fixtures :once {:before #(init-page)})
+(use-fixtures :once {:before #(f/init-page)})
 (use-fixtures :each {:before #(re-frame/dispatch-sync [::state/set-active-route {:route-name :patients}])})
 
 (deftest create-patient-form-initialized

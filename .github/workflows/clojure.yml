@@ -42,7 +42,8 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
-      - uses: actions/setup-node@v3
+      - name: Prepare nodejs
+        uses: actions/setup-node@v3
         with:
           node-version: 'latest'
           cache: 'npm'

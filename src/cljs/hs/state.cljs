@@ -1,8 +1,7 @@
 (ns hs.state
   (:require
     [re-frame.core :as re-frame]
-    [day8.re-frame.http-fx]
-    [ajax.core :refer [json-request-format json-response-format]]))
+    [hs.state.api :as api]))
 
 (re-frame/reg-sub
   ::active-route
@@ -40,19 +39,19 @@
   (fn [{:keys [db]} [_]]
     (let [form-data (:form db)]
       {:db (-> db
+               (assoc :loading true)
                (dissoc :form-errors))
-       :http-xhrio {:method          :post
-                    :uri             "/api/patients"
-                    :params          form-data
-                    :format          (json-request-format)
-                    :response-format (json-response-format {:keywords? true})
-                    :on-success      [::create-patient-success]
-                    :on-failure      [::create-patient-failure]}})))
+       :dispatch [::api/create-patient
+                  form-data
+                  {:on-success [::create-patient-success]
+                   :on-failure [::create-patient-failure]}]})))
 
 (re-frame/reg-event-fx
   ::create-patient-success
   (fn [{:keys [db]} [_ {patient-id :id}]]
-    {:db (assoc-in db [:form] {})}))
+    {:db (-> db
+             (assoc :loading false)
+             (assoc :form {}))}))
 
 (re-frame/reg-event-fx
   ::create-patient-failure
@@ -60,12 +59,41 @@
     (let [prepared (->> errors
                         (map (juxt #(-> % :field keyword) identity))
                         (into {}))]
-      {:db (assoc-in db [:form-errors] prepared)})))
+      {:db (-> db
+               (assoc :loading false)
+               (assoc :form-errors prepared))})))
 
 (re-frame/reg-sub
   ::form-errors
   (fn [db]
     (:form-errors db)))
+
+(re-frame/reg-event-fx
+  ::init-list-patients
+  (fn [{:keys [db]} [_]]
+    {:db (-> db
+             (assoc :loading true))
+     :dispatch [::api/list-patients
+                {:on-success [::list-patients-success]
+                 :on-failure [::list-patients-failure]}]}))
+
+(re-frame/reg-event-fx
+  ::list-patients-success
+  (fn [{:keys [db]} [_ result]]
+    {:db (-> db
+             (assoc :loading false)
+             (assoc :patients result))}))
+
+(re-frame/reg-event-fx
+  ::list-patients-failure
+  (fn [{:keys [db]} [_]]
+    {:db (-> db
+             (assoc :loading false))}))
+
+(re-frame/reg-sub
+  ::patients
+  (fn [db]
+    (:patients db)))
 
 (comment
   @re-frame.db/app-db

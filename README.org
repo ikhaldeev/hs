@@ -17,9 +17,9 @@
 *** DONE page
 *** DONE form
 ** List patients
-*** backend API
+*** DONE backend API
 *** pagination
-*** frontend page
+*** DONE frontend page
 ** Edit patient
 *** open edit form on select patient from list
 *** backend API

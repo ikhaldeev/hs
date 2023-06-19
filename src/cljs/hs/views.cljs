@@ -5,12 +5,32 @@
                                         ;    [hs.create-patient.views :as create-patient]
     ))
 
-(defn- patients
-  [params]
+(defn- full-name
+  [{:keys [first-name middle-name last-name]}]
+  (str first-name " " (when middle-name (str middle-name " ")) last-name))
+
+(defn- patient-item
+  [patient]
   [:div
-   [:h1 "Patients"]
-   [:div [:button {:on-click #(re-frame/dispatch [::state/open-create-patient-form])}
-          "Create patient"]]])
+   [:div (full-name patient)]
+   [:div (:sex patient)]
+   [:div (:dob patient)]
+   [:div (:address patient)]
+   [:div (:policy-number patient)]])
+
+(defn- patients
+  []
+  (re-frame/dispatch [::state/init-list-patients])
+  (fn []
+    (let [{:keys [patients _pages]} @(re-frame/subscribe [::state/patients])]
+      [:div
+       [:h1 "Patients"]
+       [:div
+        (for [{:keys [id] :as patient} patients]
+          ^{:key id}
+          [patient-item patient])]
+       [:div [:button {:on-click #(re-frame/dispatch [::state/open-create-patient-form])}
+              "Create patient"]]])))
 
 (defn- create-patient
   []
