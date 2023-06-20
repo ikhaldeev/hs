@@ -29,6 +29,16 @@
                       :dob (java.time.LocalDate/parse "1987-02-20")
                       :address "some address"
                       :policy-number "000-ABC-111"})
+
+  (update-patient ds {:id 11
+                      :first-name "Edited"
+                      :middle-name "middle name"
+                      :last-name "last name"
+                      :sex "male"
+                      :dob (java.time.LocalDate/parse "1987-02-20")
+                      :address "some address"
+                      :policy-number "000-ABC-111"})
+  
   (-> (patient-by-id ds {:id 3})
       (update :dob #(.toString %)))
 

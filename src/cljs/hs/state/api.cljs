@@ -16,10 +16,31 @@
                   :on-failure      on-failure}}))
 
 (re-frame/reg-event-fx
+  ::edit-patient
+  (fn [{:keys [_db]} [_ {:keys [patient-id data]} {:keys [on-success on-failure]}]]
+    {:http-xhrio {:method          :put
+                  :uri             (str "/api/patients/" patient-id)
+                  :params          data
+                  :format          (json-request-format)
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success      on-success
+                  :on-failure      on-failure}}))
+
+(re-frame/reg-event-fx
   ::list-patients
   (fn [{:keys [_db]} [_ {:keys [on-success on-failure]}]]
     {:http-xhrio {:method          :get
                   :uri             "/api/patients"
+                  :format          (json-request-format)
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success      on-success
+                  :on-failure      on-failure}}))
+
+(re-frame/reg-event-fx
+  ::load-patient
+  (fn [{:keys [_db]} [_ {:keys [patient-id]} {:keys [on-success on-failure]}]]
+    {:http-xhrio {:method          :get
+                  :uri             (str "/api/patients/" patient-id)
                   :format          (json-request-format)
                   :response-format (json-response-format {:keywords? true})
                   :on-success      on-success

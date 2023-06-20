@@ -70,3 +70,17 @@
     (let [request (-> (mock/request :get (str "/api/patients") {:q ["white"]}))
           response (-> (dev-handler request) :body (json/parse-string true))]
       (is (= 1 (-> response :patients count))))))
+
+(deftest edit-patient
+  (testing "patient can be edited"
+    (let [original-data test-patient
+          edited-data (assoc test-patient
+                             :first-name "Editedname"
+                             :last-name "Editedlastname")
+          {patient-id :id} (patient-created original-data)
+          _ (-> (mock/request :put (str "/api/patients/" patient-id))
+                (mock/json-body edited-data)
+                (dev-handler))
+          request (-> (mock/request :get (str "/api/patients/" patient-id)))
+          response (-> (dev-handler request) :body (json/parse-string true))]
+      (is (= edited-data (-> response (dissoc :id)))))))

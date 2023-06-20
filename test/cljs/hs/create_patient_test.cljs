@@ -19,7 +19,7 @@
 (deftest create-patient-form
   (rf-test/run-test-sync
    (testing "form data cleaned up on initialing"
-     (re-frame/dispatch [::state/set-form-value :first-name #js {:target {:value "name"}}])
+     (re-frame/dispatch [::state/set-form-value :first-name "name"])
      (re-frame/dispatch [::state/init-create-patient-form])
 
-     (is (= {} (-> @re-frame.db/app-db :form))))))
+     (is (= {} @(re-frame/subscribe [::state/form-data]))))))

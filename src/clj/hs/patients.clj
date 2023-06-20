@@ -12,6 +12,15 @@
                                            (update :dob #(LocalDate/parse %))))]
     result))
 
+(defn edit-patient
+  [id data]
+  (let [defaults {:middle-name nil
+                  :address nil}
+        validated-data (v/validated ::v/edit-patient data)]
+    (db/update-patient ds (-> (merge defaults validated-data {:id id})
+                              (update :dob #(LocalDate/parse %))))
+    {:id id}))
+
 (defn- ->patient-view
   [patient]
   (update patient :dob #(.toString %)))

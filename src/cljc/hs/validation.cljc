@@ -15,6 +15,10 @@
   (s/keys :req-un [::first-name ::last-name ::sex ::dob ::policy-number]
           :opt-un [::middle-name ::address]))
 
+(s/def ::edit-patient
+  (s/keys :req-un [::first-name ::last-name ::sex ::dob ::policy-number]
+          :opt-un [::middle-name ::address]))
+
 (s/def ::list-patients
   (s/keys :opt-un [::q ::dob-start ::dob-end ::sexes ::policy-number-starts]))
 

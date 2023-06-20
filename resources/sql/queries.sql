@@ -4,6 +4,14 @@ insert into patients (first_name, middle_name, last_name, sex, dob, address, pol
 values (:first-name, :middle-name, :last-name, :sex, :dob, :address, :policy-number)
 returning id
 
+-- :name update-patient :! :n
+-- :doc Update a single patient
+update patients
+set first_name = :first-name, middle_name = :middle-name, last_name = :last-name,
+sex = :sex, dob = :dob, address = :address, policy_number = :policy-number
+where id = :id
+
+
 -- :name patient-by-id :? :1
 -- :doc Get patient by id
 select * from patients

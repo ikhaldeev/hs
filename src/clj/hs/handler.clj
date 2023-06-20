@@ -24,6 +24,9 @@
     (GET "/:id" [id :<< as-int]
       (-> (patients/get-patient id)
           response))
+    (PUT "/:id" [id :<< as-int :as request]
+      (-> (patients/edit-patient id (:body request))
+          response))
     (GET "/" {params :query-params}
       (-> (patients/list-patients (keywordize-keys params))
           response))))
