@@ -4,7 +4,7 @@
     [compojure.core :refer [defroutes context GET PUT POST DELETE]]
     [compojure.route :refer [not-found resources]]
     [compojure.coercions :refer [as-int]]
-    [ring.util.response :refer [resource-response response bad-request]]
+    [ring.util.response :refer [resource-response response bad-request status]]
     [ring.middleware.reload :refer [wrap-reload]]
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -22,11 +22,15 @@
       (-> (patients/create-patient body)
           response))
     (GET "/:id" [id :<< as-int]
-      (-> (patients/get-patient id)
-          response))
+      (if-let [result (patients/get-patient id)]
+        (response result)
+        (status 404)))
     (PUT "/:id" [id :<< as-int :as request]
       (-> (patients/edit-patient id (:body request))
           response))
+    (DELETE "/:id" [id :<< as-int]
+      (patients/delete-patient id)
+      (status 204))
     (GET "/" {params :query-params}
       (-> (patients/list-patients (keywordize-keys params))
           response))))
@@ -41,7 +45,6 @@
     (try
       (handler request)
       (catch clojure.lang.ExceptionInfo e
-        (println (ex-data e))
         (bad-request (ex-data e))))))
 
 (def dev-handler

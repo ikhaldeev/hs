@@ -11,6 +11,10 @@ set first_name = :first-name, middle_name = :middle-name, last_name = :last-name
 sex = :sex, dob = :dob, address = :address, policy_number = :policy-number
 where id = :id
 
+-- :name delete-patient :! :n
+-- :doc Delete a single patient
+delete from patients
+where id = :id
 
 -- :name patient-by-id :? :1
 -- :doc Get patient by id
@@ -22,3 +26,8 @@ where id = :id
 select * from patients
 where true
 --~ (when (:q params) ":snip*:q")
+--~ (when (:dob-start params) " and dob >= :dob-start")
+--~ (when (:dob-end params) " and dob <= :dob-end")
+--~ (when (:sexes params) " and sex in (:v*:sexes)")
+--~ (when (:policy-number-starts params) " and policy_number ilike :policy-number-starts")
+

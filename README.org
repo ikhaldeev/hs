@@ -21,15 +21,15 @@
 *** pagination
 *** DONE frontend page
 ** Edit patient
-*** open edit form on select patient from list
-*** backend API
-*** frontend page
+*** DONE open edit form on select patient from list
+*** DONE backend API
+*** DONE frontend page
 *** frontend validation
 ** Delete patient
 *** modal on frontend
-*** backend API
+*** DONE backend API
 ** Search and filter patients
-*** backend API
+*** DONE backend API
 *** frontend form
 ** CSS/HTML
 ** uberjar

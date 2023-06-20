@@ -2,9 +2,25 @@
   (:require
     [clojure.test :refer [use-fixtures deftest testing is]]
     [next.jdbc :as jdbc]
-    [next.jdbc.sql :as sql]
-    [hs.db :as db])
-  (:import [java.time LocalDate]))
+    [hs.db :as db]
+    [hs.patients :as p]))
+
+(def policy-number "000-ABC-111")
+(def test-patient {:first-name "first name"
+                   :middle-name "middle name"
+                   :last-name "last name"
+                   :sex "male"
+                   :dob "1987-02-20"
+                   :address "some address"
+                   :policy-number policy-number})
+
+(defn patient-created
+  ([]
+   (patient-created {}))
+  ([options]
+   (let [default test-patient
+         data (merge default options)]
+     (p/create-patient data))))
 
 (defn with-test-db
   [f]
@@ -17,15 +33,6 @@
   (jdbc/execute! db/ds [(str "delete from " (name table))]))
 
 (use-fixtures :once with-test-db)
-
-(def policy-number "000-ABC-111")
-(def test-patient {:first-name "first name"
-                   :middle-name "middle name"
-                   :last-name "last name"
-                   :sex "male"
-                   :dob (LocalDate/parse "1987-02-20")
-                   :address "some address"
-                   :policy-number policy-number})
 
 (deftest test-env
   (testing "can use db in ci"

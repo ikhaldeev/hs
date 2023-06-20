@@ -2,27 +2,11 @@
   (:require
     [clojure.test :refer [use-fixtures deftest testing is]]
     [ring.mock.request :as mock]
-    [hs.db-test :refer [with-test-db clear-table!]]
+    [hs.db-test :refer [with-test-db clear-table! test-patient patient-created]]
     [hs.handler :refer [dev-handler]]
-    [hs.patients :as p]
     [cheshire.core :as json]))
 
 (use-fixtures :once with-test-db)
-
-(def policy-number "000-ABC-111")
-(def test-patient {:first-name "first name"
-                   :middle-name "middle name"
-                   :last-name "last name"
-                   :sex "male"
-                   :dob "1987-02-20"
-                   :address "some address"
-                   :policy-number policy-number})
-
-(defn- patient-created
-  [options]
-  (let [default test-patient
-        data (merge default options)]
-    (p/create-patient data)))
 
 (deftest create-patient
   (testing "patient can be created"
@@ -84,3 +68,19 @@
           request (-> (mock/request :get (str "/api/patients/" patient-id)))
           response (-> (dev-handler request) :body (json/parse-string true))]
       (is (= edited-data (-> response (dissoc :id)))))))
+
+(deftest delete-patient
+  (testing "patient can be deleted"
+    (let [{patient-id :id} (patient-created)
+          before-delete-status(-> (mock/request :get (str "/api/patients/" patient-id))
+                                  (dev-handler)
+                                  :status)
+          delete-status(-> (mock/request :delete (str "/api/patients/" patient-id))
+                           (dev-handler)
+                           :status)
+          after-delete-status(-> (mock/request :get (str "/api/patients/" patient-id))
+                                 (dev-handler)
+                                 :status)]
+      (is (= 200 before-delete-status))
+      (is (= 204 delete-status))
+      (is (= 404 after-delete-status)))))

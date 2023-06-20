@@ -51,6 +51,22 @@
   (list-patients ds (-> {:q ["first" "address"]}
                         (update :q #(map patients-q-snip-sqlvec %))))
 
+  (let [search-data {:q ["first" "address"]
+                     :dob-start "1986-01-01"
+                     :sexes ["male", "other"]}]
+    (list-patients ds (cond-> search-data
+                              (:q search-data)
+                              (update :q #(map patients-q-snip-sqlvec %))
+
+                              (:dob-start search-data)
+                              (update :dob-start #(java.time.LocalDate/parse %))
+
+                              (:dob-end search-data)
+                              (update :dob-end #(java.time.LocalDate/parse %))
+                              
+                              (:policy-number-starts search-data)
+                              (update :policy-number-starts #(str % "%")))))
+
   (list-patients ds {:q []})
 
   (list-patients ds {:q '(["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?" "%first%"]
