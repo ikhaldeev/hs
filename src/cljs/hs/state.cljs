@@ -26,7 +26,9 @@
 (re-frame/reg-event-fx
   ::init-create-patient-form
   (fn [{:keys [db]} [_]]
-    {:db (assoc db :form {})}))
+    {:db (-> db
+             (assoc :form {})
+             (dissoc :form-errors))}))
 
 (re-frame/reg-event-fx
   ::set-form-value
@@ -112,7 +114,8 @@
     {:db (-> db
              (assoc :form {})
              (assoc :loading true)
-             (assoc :patient-id id))
+             (assoc :patient-id id)
+             (dissoc :form-errors))
      :dispatch [::api/load-patient
                 {:patient-id id}
                 {:on-success [::load-patient-success]
@@ -168,6 +171,46 @@
                (assoc :loading false)
                (assoc :form-errors prepared))})))
 
+(re-frame/reg-event-fx
+  ::show-delete-patient-dialog
+  (fn [{:keys [db]} [_ patient]]
+    {:db (assoc db :patient-to-delete patient)}))
+
+(re-frame/reg-event-fx
+  ::cancel-delete
+  (fn [{:keys [db]} [_]]
+    {:db (dissoc db :patient-to-delete)}))
+
+(re-frame/reg-event-fx
+  ::delete-patient
+  (fn [{:keys [db]} [_ {:keys [patient-id]}]]
+    {:db (-> db
+             (assoc :loading true))
+     :dispatch [::api/delete-patient
+                {:patient-id patient-id}
+                {:on-success [::delete-patient-success]
+                 :on-failure [::delete-patient-failure]}]}))
+
+(re-frame/reg-event-fx
+  ::delete-patient-success
+  (fn [{:keys [db]} [_]]
+    {:db (-> db
+             (assoc :loading false)
+             (dissoc :patient-to-delete))
+     :dispatch [::init-list-patients]}))
+
+(re-frame/reg-event-fx
+  ::delete-patient-failure
+  (fn [{:keys [db]} [_]]
+    {:db (-> db
+             (assoc :loading false)
+             (assoc :delete-error true))}))
+
+(re-frame/reg-sub
+  ::patient-to-delete
+  (fn [db]
+    (:patient-to-delete db)))
+
 (comment
   @re-frame.db/app-db
 
@@ -176,5 +219,8 @@
   @(re-frame/subscribe [::form-errors])
   @(re-frame/subscribe [::form-data])
 
+
   (re-frame/dispatch [::set-active-route {:route-name :edit-patient
-                                          :params {:patient-id 14}}]))
+                                          :params {:patient-id 14}}])
+
+  @(re-frame/subscribe [::patients]))

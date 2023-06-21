@@ -26,12 +26,12 @@
 *** DONE frontend page
 *** frontend validation
 ** Delete patient
-*** modal on frontend
+*** DONE modal on frontend
 *** DONE backend API
 ** Search and filter patients
 *** DONE backend API
 *** frontend form
-** CSS/HTML
+** DONE CSS/HTML
 ** uberjar
 ** docker image
 ** Integration test
@@ -39,6 +39,7 @@
 * Not implemented
 ** frontend validation
 ** integration test
+** frontend routing
 ** connection pool
 ** uberjar
 ** docker image for deployment into k8s

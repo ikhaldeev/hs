@@ -3,7 +3,10 @@
  {:app {:target :browser
         :output-dir "resources/public/js/compiled"
         :asset-path "/js/compiled"
-        :modules {:app {:init-fn hs.core/init}}}
+        :modules {:app {:init-fn hs.core/init}}
+        :devtools {:ignore-warnings true
+                   :hud             #{:errors :progress}
+                   :watch-dir       "resources/public"}}
   :ci
   {:target    :karma
    :output-to "target/ci.js"

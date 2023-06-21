@@ -27,6 +27,16 @@
                   :on-failure      on-failure}}))
 
 (re-frame/reg-event-fx
+  ::delete-patient
+  (fn [{:keys [_db]} [_ {:keys [patient-id]} {:keys [on-success on-failure]}]]
+    {:http-xhrio {:method          :delete
+                  :uri             (str "/api/patients/" patient-id)
+                  :format          (json-request-format)
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success      on-success
+                  :on-failure      on-failure}}))
+
+(re-frame/reg-event-fx
   ::list-patients
   (fn [{:keys [_db]} [_ {:keys [on-success on-failure]}]]
     {:http-xhrio {:method          :get
