@@ -1,5 +1,6 @@
 (ns hs.state
   (:require
+    [clojure.string :as s]
     [re-frame.core :as re-frame]
     [hs.state.api :as api]))
 
@@ -77,12 +78,8 @@
 
 (re-frame/reg-event-fx
   ::init-list-patients
-  (fn [{:keys [db]} [_]]
-    {:db (-> db
-             (assoc :loading true))
-     :dispatch [::api/list-patients
-                {:on-success [::list-patients-success]
-                 :on-failure [::list-patients-failure]}]}))
+  (fn [{:keys [_db]} [_]]
+    {:dispatch [::search]}))
 
 (re-frame/reg-event-fx
   ::list-patients-success
@@ -211,6 +208,48 @@
   (fn [db]
     (:patient-to-delete db)))
 
+(re-frame/reg-sub
+  ::search-values
+  (fn [db]
+    (:search-values db)))
+
+(re-frame/reg-event-fx
+  ::set-search-value
+  (fn [{:keys [db]} [_ field value]]
+    {:db (assoc-in db [:search-values field] value)}))
+
+(re-frame/reg-event-fx
+  ::search
+  (fn [{:keys [db]} [_]]
+    (let [search (as-> db s
+                       (:search-values s)
+                       (update s :q s/split #" ")
+                       (remove #(-> % second empty?) s)
+                       (into {} s))]
+      {:db (assoc db :loading true)
+       :dispatch [::api/list-patients
+                  search
+                  {:on-success [::list-patients-success]
+                   :on-failure [::list-patients-failure]}]})))
+
+(re-frame/reg-sub
+  ::loading
+  (fn [db]
+    (:loading db)))
+
+(re-frame/reg-event-fx
+  ::reset-search
+  (fn [{:keys [db]} [_]]
+    {:db (assoc db
+                :search-values {}
+                :reset-search-key (str (rand)))
+     :dispatch [::search]}))
+
+(re-frame/reg-sub
+  ::reset-search-key
+  (fn [db]
+    (:reset-search-key db)))
+
 (comment
   @re-frame.db/app-db
 
@@ -223,4 +262,9 @@
   (re-frame/dispatch [::set-active-route {:route-name :edit-patient
                                           :params {:patient-id 14}}])
 
-  @(re-frame/subscribe [::patients]))
+  @(re-frame/subscribe [::patients])
+
+  (as-> @(re-frame/subscribe [::search-values]) s
+        (update s :q s/split #" ")
+        (remove #(-> % second empty?) s)
+        (into {} s)))

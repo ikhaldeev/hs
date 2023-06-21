@@ -38,9 +38,10 @@
 
 (re-frame/reg-event-fx
   ::list-patients
-  (fn [{:keys [_db]} [_ {:keys [on-success on-failure]}]]
+  (fn [{:keys [_db]} [_ params {:keys [on-success on-failure]}]]
     {:http-xhrio {:method          :get
                   :uri             "/api/patients"
+                  :params          params
                   :format          (json-request-format)
                   :response-format (json-response-format {:keywords? true})
                   :on-success      on-success

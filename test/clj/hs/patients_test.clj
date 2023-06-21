@@ -32,4 +32,8 @@
     (is (empty (p/list-patients {:sexes ["other"]}))))
   (testing "filter by policy number"
     (is (seq (p/list-patients {:policy-number-starts "000"})))
-    (is (empty (p/list-patients {:policy-number-starts "111"})))))
+    (is (empty (p/list-patients {:policy-number-starts "111"}))))
+  (testing "empty string in q parsed as empty filter, and returns everything"
+    (is (seq (p/list-patients {:q ""}))))
+  (testing "string in q parsed as single query string"
+    (is (seq (p/list-patients {:q "red"})))))

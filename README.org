@@ -30,7 +30,7 @@
 *** DONE backend API
 ** Search and filter patients
 *** DONE backend API
-*** frontend form
+*** DONE frontend form
 ** DONE CSS/HTML
 ** uberjar
 ** docker image

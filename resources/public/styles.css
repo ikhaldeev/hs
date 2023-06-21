@@ -162,3 +162,29 @@ body {
     display: flex;
     gap: 20px;
 }
+
+.search-form {
+    display: flex;
+    flex: 1 1;
+    gap: 16px;
+    padding: 10px;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-field select {
+    height: 20px;
+}
+
+.search-actions {
+    padding-top: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    gap: 8px;
+}

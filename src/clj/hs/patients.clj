@@ -38,6 +38,9 @@
   [data]
   (cond-> data
           (:q data)
+          (update :q #(if (string? %) [%] %))
+
+          (:q data)
           (update :q #(map db/patients-q-snip-sqlvec %))
 
           (:dob-start data)
@@ -63,6 +66,8 @@
                   :sexes ["male", "other"]
                   :policy-number-starts "000"})
   (list-patients {:q ["non-existent"]})
+  (list-patients {:q ""})
+  (list-patients {:q "first"})
   (list-patients {:dob-start "2050-01-01"})
   (list-patients {:dob-start "1986-01-01"})
 
