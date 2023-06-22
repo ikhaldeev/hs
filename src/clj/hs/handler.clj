@@ -55,6 +55,13 @@
       wrap-params
       wrap-json-response))
 
+(def handler
+  (-> #'app
+      wrap-exceptions
+      (wrap-json-body {:keywords? true})
+      wrap-params
+      wrap-json-response))
+
 (comment
   (def server (run-jetty dev-handler {:port 3000
                                       :join? false}))
