@@ -32,16 +32,14 @@
 *** DONE backend API
 *** DONE frontend form
 ** DONE CSS/HTML
-** uberjar
+** DONE uberjar
 ** docker image
 ** Integration test
 
 * Not implemented
-** frontend validation
 ** integration test
 ** frontend routing
 ** connection pool
-** uberjar
 ** docker image for deployment into k8s
 * Not going to implement
 ** system components: mount, integrant.

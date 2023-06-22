@@ -50,7 +50,10 @@
           (update :dob-end #(java.time.LocalDate/parse %))
 
           (:policy-number-starts data)
-          (update :policy-number-starts #(str % "%"))))
+          (update :policy-number-starts #(str % "%"))
+
+          (:sexes data)
+          (update :sexes #(if (string? %) [%] %))))
 
 (defn list-patients
   [data]
@@ -74,6 +77,7 @@
 
   (prepare-query {:dob-end "1900-01-01"})
   (list-patients {:dob-end "1900-01-01"})
+  (list-patients {:sexes "female"})
   (list-patients {:sexes ["female"]})
   (list-patients {:sexes ["other"]})
   (list-patients {:policy-number-starts "000"})

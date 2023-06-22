@@ -42,4 +42,6 @@
   (testing "q should work with nil values for middle name and address"
     (is (= 4 (count (:patients (p/list-patients {:q ""}))))))
   (testing "string in q parsed as single query string"
-    (is (seq (:patients (p/list-patients {:q "red"}))))))
+    (is (seq (:patients (p/list-patients {:q "red"})))))
+  (testing "string in sexes parsed as single query string. handle http query of form ?sex=male and ?sex=female&sex=male"
+    (is (seq (:patients (p/list-patients {:sexes "male"}))))))
