@@ -3,13 +3,16 @@
 
 (s/def ::not-empty seq)
 (s/def ::first-name (s/and ::not-empty string?))
-(s/def ::middle-name (s/and string?))
-(s/def ::last-name (s/and seq string?))
+(s/def ::middle-name (s/or :empty nil?
+                           :string string?))
+(s/def ::last-name (s/and ::not-empty string?))
 (s/def ::sex #{"male" "female" "other"})
 (def dob-regex #"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$")
-(s/def ::dob (s/and string? #(re-matches dob-regex %)))
-(s/def ::policy-number (s/and seq string?))
-(s/def ::address (s/and seq string?))
+(s/def ::date-format #(re-matches dob-regex %))
+(s/def ::dob (s/and string? ::date-format))
+(s/def ::policy-number (s/and ::not-empty string?))
+(s/def ::address (s/or :empty nil?
+                       :string string?))
 
 (s/def ::create-patient
   (s/keys :req-un [::first-name ::last-name ::sex ::dob ::policy-number]
@@ -21,6 +24,17 @@
 
 (s/def ::list-patients
   (s/keys :opt-un [::q ::dob-start ::dob-end ::sexes ::policy-number-starts]))
+
+(def messages
+  {nil "Field is required"
+   :not-empty "Field must not be empty"
+   :date-format "Incorrect date"})
+
+(defn- get-message
+  [problem-via]
+  (if-let [message (get messages (keyword problem-via))]
+    message
+    "unknown error"))
 
 (defn- get-problem-field
   [problem]
@@ -34,10 +48,12 @@
   (let [explain-data (s/explain-data spec data)
         problems (or (:clojure.spec.alpha/problems explain-data)
                      (:cljs.spec.alpha/problems explain-data))]
-    (println explain-data)
     (->> problems
-         (map (fn [p] {:field (get-problem-field p)
-                       :via (some->> p :via (drop 1) (last) (name) (keyword))})))))
+         (map (fn [p]
+                (let [via (some->> p :via (drop 1) (last) (name) (keyword))]
+                  {:field (get-problem-field p)
+                   :via via
+                   :message (get-message via)}))))))
 
 (defn- select-only-defined-keys
   [spec data]
@@ -56,6 +72,10 @@
                       {:type :validation
                        :errors (get-errors spec data)})))
     prepared-data))
+
+(defn valid?
+  [spec data]
+  (s/valid? spec data))
 
 (comment
   (s/valid? ::first-name "na")
@@ -100,4 +120,9 @@
                                 :sex "male"
                                 :dob "1987-02-20"
                                 :policy-number "1234-ABC-1234"
-                                :address "city, zip, street"}))
+                                :address "city, zip, street"})
+
+  (get-message nil)
+  (get-message "not-empty")
+  (get-message :not-empty)
+  (get-message :somthing-else))

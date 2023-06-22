@@ -16,7 +16,7 @@
 
 (defn patients-q-snip-sqlvec
   [q]
-  ["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number iLIKE ?", (str "%" q "%")])
+  ["and first_name || ' ' || coalesce(middle_name::text ,'') || ' ' || last_name || ' ' || dob || ' ' || coalesce(address::text ,'') || ' ' || policy_number iLIKE ?", (str "%" q "%")])
 
 (comment
   (hugsql/def-sqlvec-fns "sql/queries.sql"

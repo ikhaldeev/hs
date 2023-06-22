@@ -13,27 +13,33 @@
   (patient-created {:last-name "Blue"
                     :policy-number "000-ABC-002"})
   (patient-created {:last-name "Red"
+                    :sex "female"
                     :policy-number "000-ABC-003"})
+  (patient-created {:middle-name nil
+                    :address nil
+                    :policy-number "000-ABC-004"})
   (testing "result with multiple filters"
     (is (seq (p/list-patients {:q ["first" "address"]
                                :dob-start "1986-01-01"
                                :sexes ["male", "other"]
                                :policy-number-starts "000"}))))
   (testing "no result when query not found"
-    (is (empty (p/list-patients {:q ["non-existent"]}))))
+    (is (empty? (:patients (p/list-patients {:q ["non-existent"]})))))
   (testing "filter by dob start"
-    (is (empty (p/list-patients {:dob-start "2050-01-01"})))
-    (is (seq (p/list-patients {:dob-start "1986-01-01"}))))
+    (is (empty? (:patients (p/list-patients {:dob-start "2050-01-01"}))))
+    (is (seq (:patients (p/list-patients {:dob-start "1986-01-01"})))))
   (testing "filter by dob end"
-    (is (seq (p/list-patients {:dob-end "2050-01-01"})))
-    (is (empty (p/list-patients {:dob-end "1900-01-01"}))))
+    (is (seq (:patients (p/list-patients {:dob-end "2050-01-01"}))))
+    (is (empty? (:patients (p/list-patients {:dob-end "1900-01-01"})))))
   (testing "filter by sexes"
-    (is (seq (p/list-patients {:sexes ["female"]})))
-    (is (empty (p/list-patients {:sexes ["other"]}))))
+    (is (seq (:patients (p/list-patients {:sexes ["female"]}))))
+    (is (empty? (:patients (p/list-patients {:sexes ["other"]})))))
   (testing "filter by policy number"
-    (is (seq (p/list-patients {:policy-number-starts "000"})))
-    (is (empty (p/list-patients {:policy-number-starts "111"}))))
+    (is (seq (:patients (p/list-patients {:policy-number-starts "000"}))))
+    (is (empty? (:patients (p/list-patients {:policy-number-starts "111"})))))
   (testing "empty string in q parsed as empty filter, and returns everything"
-    (is (seq (p/list-patients {:q ""}))))
+    (is (seq (:patients (p/list-patients {:q ""})))))
+  (testing "q should work with nil values for middle name and address"
+    (is (= 4 (count (:patients (p/list-patients {:q ""}))))))
   (testing "string in q parsed as single query string"
-    (is (seq (p/list-patients {:q "red"})))))
+    (is (seq (:patients (p/list-patients {:q "red"}))))))

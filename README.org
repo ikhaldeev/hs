@@ -24,7 +24,7 @@
 *** DONE open edit form on select patient from list
 *** DONE backend API
 *** DONE frontend page
-*** frontend validation
+*** DONE frontend validation
 ** Delete patient
 *** DONE modal on frontend
 *** DONE backend API

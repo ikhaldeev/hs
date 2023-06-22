@@ -99,19 +99,19 @@
     [:input {:default-value (:first-name form-data)
              :on-change #(re-frame/dispatch [::state/set-form-value :first-name (.. % -target -value)])}]
     (when (:first-name errors)
-      [:label.error (str "Error: " (-> errors :first-name :via))])]
+      [:label.error (str "Error: " (-> errors :first-name :message))])]
    [:div.form-field
     [:label "Middle Name"]
     [:input {:default-value (:middle-name form-data)
              :on-change #(re-frame/dispatch [::state/set-form-value :middle-name (.. % -target -value)])}]
     (when (:middle-name errors)
-      [:label.error (str "Error: " (-> errors :middle-name :via))])]
+      [:label.error (str "Error: " (-> errors :middle-name :message))])]
    [:div.form-field
     [:label "Last Name"]
     [:input {:default-value (:last-name form-data)
              :on-change #(re-frame/dispatch [::state/set-form-value :last-name (.. % -target -value)])}]
     (when (:last-name errors)
-      [:label.error (str "Error: " (-> errors :last-name :via))])]
+      [:label.error (str "Error: " (-> errors :last-name :message))])]
    [:div.form-field
     [:label "Sex"]
     [:select {:default-value (:sex form-data)
@@ -121,26 +121,26 @@
      [:option {:value "female"} "Female"]
      [:option {:value "other"} "Other"]]
     (when (:sex errors)
-      [:label.error (str "Error: " (-> errors :sex :via))])]
+      [:label.error (str "Error: " (-> errors :sex :message))])]
    [:div.form-field
     [:label "Date of Birth"]
     [:input {:type "date"
              :default-value (:dob form-data)
              :on-change #(re-frame/dispatch [::state/set-form-value :dob (.. % -target -value)])}]
     (when (:dob errors)
-      [:label.error (str "Error: " (-> errors :dob :via))])]
+      [:label.error (str "Error: " (-> errors :dob :message))])]
    [:div.form-field
     [:label "Address"]
     [:textarea {:default-value (:address form-data)
                 :on-change #(re-frame/dispatch [::state/set-form-value :address (.. % -target -value)])}]
     (when (:address errors)
-      [:label.error (str "Error: " (-> errors :address :via))])]
+      [:label.error (str "Error: " (-> errors :address :message))])]
    [:div.form-field
     [:label "Policy Number"]
     [:input {:default-value (:policy-number form-data)
              :on-change #(re-frame/dispatch [::state/set-form-value :policy-number (.. % -target -value)])}]
     (when (:policy-number errors)
-      [:label.error (str "Error: " (-> errors :policy-number :via))])]])
+      [:label.error (str "Error: " (-> errors :policy-number :message))])]])
 
 (defn- edit-patient-form
   []

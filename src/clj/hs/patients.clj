@@ -65,6 +65,7 @@
                   :dob-start "1986-01-01"
                   :sexes ["male", "other"]
                   :policy-number-starts "000"})
+  (list-patients {})
   (list-patients {:q ["non-existent"]})
   (list-patients {:q ""})
   (list-patients {:q "first"})
@@ -76,5 +77,6 @@
   (list-patients {:sexes ["female"]})
   (list-patients {:sexes ["other"]})
   (list-patients {:policy-number-starts "000"})
-  (list-patients {:policy-number-starts "111"}))
+  (list-patients {:policy-number-starts "111"})
+  (get-patient 18))
 

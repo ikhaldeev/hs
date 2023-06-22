@@ -2,7 +2,14 @@
   (:require
     [clojure.string :as s]
     [re-frame.core :as re-frame]
-    [hs.state.api :as api]))
+    [hs.state.api :as api]
+    [hs.validation :as v]))
+
+(defn- prepare-errors
+  [errors]
+  (->> errors
+       (map (juxt #(-> % :field keyword) identity))
+       (into {})))
 
 (re-frame/reg-sub
   ::active-route
@@ -50,13 +57,16 @@
   ::create-patient
   (fn [{:keys [db]} [_]]
     (let [form-data (:form db)]
-      {:db (-> db
-               (assoc :loading true)
-               (dissoc :form-errors))
-       :dispatch [::api/create-patient
-                  form-data
-                  {:on-success [::create-patient-success]
-                   :on-failure [::create-patient-failure]}]})))
+      (if (v/valid? ::v/create-patient form-data)
+        {:db (-> db
+                 (assoc :loading true)
+                 (dissoc :form-errors))
+         :dispatch [::api/create-patient
+                    form-data
+                    {:on-success [::create-patient-success]
+                     :on-failure [::create-patient-failure]}]}
+        (let [errors (prepare-errors (v/get-errors ::v/create-patient form-data))]
+          {:db (assoc db :form-errors errors)})))))
 
 (re-frame/reg-event-fx
   ::create-patient-success
@@ -69,12 +79,9 @@
 (re-frame/reg-event-fx
   ::create-patient-failure
   (fn [{:keys [db]} [_ {{errors :errors} :response}]]
-    (let [prepared (->> errors
-                        (map (juxt #(-> % :field keyword) identity))
-                        (into {}))]
-      {:db (-> db
-               (assoc :loading false)
-               (assoc :form-errors prepared))})))
+    {:db (-> db
+             (assoc :loading false)
+             (assoc :form-errors (prepare-errors errors)))}))
 
 (re-frame/reg-event-fx
   ::init-list-patients
@@ -141,14 +148,17 @@
   (fn [{:keys [db]} [_]]
     (let [patient-id (:patient-id db)
           form-data (:form db)]
-      {:db (-> db
-               (assoc :loading true)
-               (dissoc :form-errors))
-       :dispatch [::api/edit-patient
-                  {:patient-id patient-id
-                   :data form-data}
-                  {:on-success [::edit-patient-success]
-                   :on-failure [::edit-patient-failure]}]})))
+      (if (v/valid? ::v/edit-patient form-data)
+        {:db (-> db
+                 (assoc :loading true)
+                 (dissoc :form-errors))
+         :dispatch [::api/edit-patient
+                    {:patient-id patient-id
+                     :data form-data}
+                    {:on-success [::edit-patient-success]
+                     :on-failure [::edit-patient-failure]}]}
+        (let [errors (prepare-errors (v/get-errors ::v/edit-patient form-data))]
+          {:db (assoc db :form-errors errors)})))))
 
 (re-frame/reg-event-fx
   ::edit-patient-success
