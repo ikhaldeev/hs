@@ -79,10 +79,23 @@
   []
   (re-frame/dispatch [::state/init-list-patients])
   (fn []
-    (let [{:keys [patients _pages]} @(re-frame/subscribe [::state/patients])]
+    (let [{:keys [patients pages]} @(re-frame/subscribe [::state/patients])]
       [:div.patients-page
        [:h1 "Patients"]
        [search-form]
+       [:div.limits
+        [:div.pages
+         [:div "Pages"]
+         (for [page (range 1 (inc pages))]
+           ^{:key page}
+           [:a {:href "#"
+                :on-click #(re-frame/dispatch [::state/set-page page])} (str page)])]
+        [:div.items-on-page
+         [:div "Items on page"]
+         [:select {:on-change #(re-frame/dispatch [::state/set-items-on-page (.. % -target -value)])}
+          [:option {:value 10} "10"]
+          [:option {:value 50} "50"]
+          [:option {:value 100} "100"]]]]
        [:div.patients-items
         (for [{:keys [id] :as patient} patients]
           ^{:key id}

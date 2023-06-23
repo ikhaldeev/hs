@@ -85,8 +85,10 @@
 
 (re-frame/reg-event-fx
   ::init-list-patients
-  (fn [{:keys [_db]} [_]]
-    {:dispatch [::search]}))
+  (fn [{:keys [db]} [_]]
+    {:db (assoc db :limits {:page 1
+                            :page-size 10})
+     :dispatch [::search]}))
 
 (re-frame/reg-event-fx
   ::list-patients-success
@@ -235,10 +237,11 @@
                        (:search-values s)
                        (update s :q s/split #" ")
                        (remove #(-> % second empty?) s)
-                       (into {} s))]
+                       (into {} s))
+          limits (:limits db)]
       {:db (assoc db :loading true)
        :dispatch [::api/list-patients
-                  search
+                  (merge search limits)
                   {:on-success [::list-patients-success]
                    :on-failure [::list-patients-failure]}]})))
 
@@ -259,6 +262,18 @@
   ::reset-search-key
   (fn [db]
     (:reset-search-key db)))
+
+(re-frame/reg-event-fx
+  ::set-page
+  (fn [{:keys [db]} [_ page]]
+    {:db (assoc-in db [:limits :page] page)
+     :dispatch [::search]}))
+
+(re-frame/reg-event-fx
+  ::set-items-on-page
+  (fn [{:keys [db]} [_ page-size]]
+    {:db (assoc-in db [:limits :page-size] page-size)
+     :dispatch [::search]}))
 
 (comment
   @re-frame.db/app-db

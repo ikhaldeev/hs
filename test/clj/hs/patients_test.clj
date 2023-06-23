@@ -44,4 +44,6 @@
   (testing "string in q parsed as single query string"
     (is (seq (:patients (p/list-patients {:q "red"})))))
   (testing "string in sexes parsed as single query string. handle http query of form ?sex=male and ?sex=female&sex=male"
-    (is (seq (:patients (p/list-patients {:sexes "male"}))))))
+    (is (seq (:patients (p/list-patients {:sexes "male"})))))
+  (testing "pagination doesnt brake search"
+    (is (seq (:patients (p/list-patients {:page "1"}))))))

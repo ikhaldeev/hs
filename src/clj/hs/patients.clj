@@ -53,15 +53,36 @@
           (update :policy-number-starts #(str % "%"))
 
           (:sexes data)
-          (update :sexes #(if (string? %) [%] %))))
+          (update :sexes #(if (string? %) [%] %))
+
+          :always
+          (dissoc :page :page-size)))
+
+(defn- prepare-limits
+  [data]
+  (let [default-page-size "10"
+        default-page "1"
+        page-size (-> data :page-size (or default-page-size) (Integer/parseInt))
+        page (-> data :page (or default-page) (Integer/parseInt))]
+    {:limit page-size
+     :offset (-> page (dec) (* page-size))}))
 
 (defn list-patients
   [data]
   (let [validated-data (v/validated ::v/list-patients data)
         query-data (prepare-query validated-data)
-        patients (->> (db/list-patients ds query-data)
-                      (map ->patient-view))]
-    {:patients patients}))
+        limits-data (prepare-limits validated-data)
+        patients (->> (db/list-patients ds (merge limits-data query-data))
+                      (map ->patient-view))
+        pages (-> (db/list-patients ds (assoc query-data
+                                              :count true))
+                  first
+                  (get :count)
+                  (/ (:limit limits-data))
+                  (Math/ceil)
+                  (int))]
+    {:patients patients
+     :pages pages}))
 
 (comment
   (list-patients {:q ["first" "address"]
@@ -82,5 +103,6 @@
   (list-patients {:sexes ["other"]})
   (list-patients {:policy-number-starts "000"})
   (list-patients {:policy-number-starts "111"})
+  (list-patients {:page "1"})
   (get-patient 18))
 

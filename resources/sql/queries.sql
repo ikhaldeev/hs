@@ -23,11 +23,15 @@ where id = :id
 
 -- :name list-patients :? :*
 -- :doc Get patients list by query params
-select * from patients
+select
+--~ (if (:count params) " count(*) " " * ")
+from patients
 where true
 --~ (when (:q params) ":snip*:q")
 --~ (when (:dob-start params) " and dob >= :dob-start")
 --~ (when (:dob-end params) " and dob <= :dob-end")
 --~ (when (:sexes params) " and sex in (:v*:sexes)")
 --~ (when (:policy-number-starts params) " and policy_number ilike :policy-number-starts")
+--~ (when (:limit params) " limit :limit")
+--~ (when (:offset params) " offset :offset")
 

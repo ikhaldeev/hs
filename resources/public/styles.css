@@ -188,3 +188,10 @@ body {
     
     gap: 8px;
 }
+
+.limits {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-right: 50px;
+}

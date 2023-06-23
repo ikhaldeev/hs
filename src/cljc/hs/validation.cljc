@@ -22,8 +22,13 @@
   (s/keys :req-un [::first-name ::last-name ::sex ::dob ::policy-number]
           :opt-un [::middle-name ::address]))
 
+(s/def ::page-size #{"10" "50" "100"})
+(def number-regex #"^\d+$")
+(s/def ::string-number #(re-matches number-regex %))
+(s/def ::page ::string-number)
 (s/def ::list-patients
-  (s/keys :opt-un [::q ::dob-start ::dob-end ::sexes ::policy-number-starts]))
+  (s/keys :opt-un [::q ::dob-start ::dob-end ::sexes ::policy-number-starts
+                   ::page-size ::page]))
 
 (def messages
   {nil "Field is required"

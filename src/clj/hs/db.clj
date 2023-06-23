@@ -69,6 +69,8 @@
 
   (list-patients ds {:q []})
 
+  (list-patients ds {:count true :offset 10})
+  
   (list-patients ds {:q '(["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?" "%first%"]
                           ["and first_name || ' ' || middle_name || ' ' || last_name || ' ' || dob || ' ' || address || ' ' || policy_number LIKE ?" "%address%"])})
 
