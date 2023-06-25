@@ -18,6 +18,20 @@
   [q]
   ["and first_name || ' ' || coalesce(middle_name::text ,'') || ' ' || last_name || ' ' || dob || ' ' || coalesce(address::text ,'') || ' ' || policy_number iLIKE ?", (str "%" q "%")])
 
+(defn init!
+  []
+  (jdbc/execute-one! ds ["
+create table if not exists patients (
+  id            serial PRIMARY KEY,
+  first_name    text,
+  middle_name   text,
+  last_name     text,
+  sex           text,
+  dob           date,
+  address       text,
+  policy_number text
+);"]))
+
 (comment
   (hugsql/def-sqlvec-fns "sql/queries.sql"
     {:adapter (next-adapter/hugsql-adapter-next-jdbc jdbc/unqualified-snake-kebab-opts)})

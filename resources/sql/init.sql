@@ -1,4 +1,4 @@
-create table patients (
+create table if not exists patients (
   id            serial PRIMARY KEY,
   first_name    text,
   middle_name   text,
